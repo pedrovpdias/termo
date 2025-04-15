@@ -9,23 +9,32 @@ use Illuminate\Support\Facades\Http;
 class AppController extends Controller
 {
     public function index()
-    { 
-        if(!session('word')) {
-            $secretWord = new SecretWord();
-            if($secretWord['word']) {
+    {   
+        date_default_timezone_set('America/Sao_Paulo');
+        if(!session('word')) { 
+            $secretWord = SecretWord::find(1);
+            
+            if($secretWord) {
                 if($secretWord['created_at'] != $secretWord['updated_at']) {
                     $secretWordDate = $secretWord['updated_at'];
                 }
                 else {
                     $secretWordDate = $secretWord['created_at'];
-                }                
+                }
+
+                if(date('Y-m-d') == $secretWordDate->format('Y-m-d')) {
+                    $checkSecretWordDate = true;
+                }
+                else {
+                    $checkSecretWordDate = false;
+                }
             }
 
             else {
-                $secretWordDate = now();
+                $checkSecretWordDate = false;
             }
 
-            if(date('Y-m-d') == $secretWordDate->format('Y-m-d')) {
+            if(!$secretWord || !$checkSecretWordDate) {
                 do {
                     $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/random');
                     $data = $response->json();
@@ -33,6 +42,9 @@ class AppController extends Controller
 
                 session(['word' => $data['word']]);
 
+                if(!$secretWord) {
+                    $secretWord = new SecretWord;
+                }
                 $secretWord->word = $data['word'];
                 $secretWord->save();
             }
@@ -65,6 +77,7 @@ class AppController extends Controller
         else {
             echo json_encode(['result' => 'lose']);
         }
+
         exit();
 
     }
