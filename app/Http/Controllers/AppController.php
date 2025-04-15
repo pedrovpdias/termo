@@ -58,7 +58,7 @@ class AppController extends Controller
     }
 
     public function guess(Request $request)
-    {
+    { dd($request->all());
         $guess = $request->input('rows')[$request->input('attempt')];
         $target = strtoupper('MELAO'); // ou uma palavra dinâmica
 

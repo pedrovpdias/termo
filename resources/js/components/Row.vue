@@ -1,5 +1,5 @@
 <template>
-  <section class="grid gap-4">
+  <section class="grid gap-4 z-20">
     <div v-for="row in 6" :key="row" :ref="el => setRowRef(row, el)">
       <Letter 
         :attempt="attempt" 

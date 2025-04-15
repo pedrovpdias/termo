@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-5 gap-4 w-fit mx-auto">
+  <div class="grid grid-cols-5 gap-4 w-fit mx-auto z-30">
     <input
       v-for="n in 5"
       :key="n"
@@ -84,19 +84,19 @@
 
   // Adiciona a lógica das classes CSS
   function inputClass(index) {
-    const base = 'border-2 size-18 rounded-lg text-3xl font-bold text-center transition-all';
+    const base = 'outline-2 size-18 rounded-lg text-3xl font-bold text-center transition-all';
 
     if (props.attempt !== props.row) {
       const colorMap = {
-        correct: 'bg-green-500 text-white border-green-600',
-        misplaced: 'bg-yellow-400 text-white border-yellow-500',
-        wrong: 'bg-zinc-600 text-white border-zinc-700',
+        correct: 'bg-green-500 text-white outline-green-600',
+        misplaced: 'bg-yellow-400 text-white outline-yellow-500',
+        wrong: 'bg-zinc-600 text-white outline-zinc-700',
       };
 
-      const feedbackClass = props.feedback?.[index] ? colorMap[props.feedback[index]] : 'bg-white/5 border-zinc-300/30 text-transparent';
+      const feedbackClass = props.feedback?.[index] ? colorMap[props.feedback[index]] : 'bg-white/5 outline-zinc-300/30 text-transparent';
       return `${base} ${feedbackClass}`;
     }
 
-    return `${base} bg-white/20 border-zinc-300 text-white uppercase caret-transparent`;
+    return `${base} bg-white/20 outline-zinc-300 text-white uppercase caret-transparent z-50 border-3 border-transparent focus:border-indigo-500/50`;
   }
 </script>

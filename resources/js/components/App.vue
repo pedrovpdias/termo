@@ -1,5 +1,5 @@
 <template>
-  <form method="post" action="/guess" class="grid justify-center place-content-start min-h-screen gap-16 p-8">
+  <form method="post" action="/guess" class="grid justify-center place-content-start min-h-screen gap-16 p-8 z-10">
     <h1 class="text-4xl font-bold text-center">TERMO</h1>
 
     <Row 
@@ -40,7 +40,7 @@
 
         // Agrupar inputs por linha
         inputs.forEach(input => {
-          const [, row, , index] = input.name.split('_'); // exemplo: row_1_letter_3
+          const [row, , index] = input.name.split('_'); // exemplo: row_1_letter_3
           if (!rows[row]) rows[row] = {};
           rows[row][index] = input.value;
         });
