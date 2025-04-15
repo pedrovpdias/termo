@@ -59,26 +59,26 @@ class AppController extends Controller
 
     public function guess(Request $request)
     {
-        $letter_1 = $request->input('letter_1');
-        $letter_2 = $request->input('letter_2');
-        $letter_3 = $request->input('letter_3');
-        $letter_4 = $request->input('letter_4');
-        $letter_5 = $request->input('letter_5');       
+        $guess = $request->input('rows')[$request->input('attempt')];
+        $target = strtoupper('MELAO'); // ou uma palavra dinâmica
 
-        $guess = $letter_1.$letter_2.$letter_3.$letter_4.$letter_5;
-        $guess = strtolower($guess);
-        echo json_encode(['guess' => $guess]);
-        
-        $word = session('word');
+        $feedback = [];
 
-        if($guess == $word) {
-            echo json_encode(['result' => 'win']);
+        for ($i = 1; $i <= 5; $i++) {
+            $letter = strtoupper($guess[$i]);
+            $targetLetter = $target[$i - 1];
+
+            if ($letter === $targetLetter) {
+                $feedback[$i] = 'correct'; // verde
+            } elseif (str_contains($target, $letter)) {
+                $feedback[$i] = 'misplaced'; // amarelo
+            } else {
+                $feedback[$i] = 'wrong'; // cinza
+            }
         }
-        else {
-            echo json_encode(['result' => 'lose']);
-        }
 
-        exit();
-
+        return response()->json([
+            'feedback' => $feedback
+        ]);
     }
 }

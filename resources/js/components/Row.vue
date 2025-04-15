@@ -1,7 +1,12 @@
 <template>
   <section class="grid gap-4">
     <div v-for="row in 6" :key="row" :ref="el => setRowRef(row, el)">
-      <Letter :attempt="attempt" :row="row" @ready="onReady" />
+      <Letter 
+        :attempt="attempt" 
+        :row="row"
+        :feedback="feedback"
+        @ready="onReady" 
+      />
     </div>
   </section>
 </template>
@@ -10,7 +15,7 @@
   import { ref } from 'vue';
   import Letter from './Letter.vue';
 
-  const props = defineProps(['attempt', 'row']);
+  const props = defineProps(['attempt', 'row', 'feedback']);
   const rowRefs = ref({});
 
   const emit = defineEmits(['ready']);

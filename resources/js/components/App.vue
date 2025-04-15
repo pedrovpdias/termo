@@ -2,7 +2,11 @@
   <form method="post" action="/guess" class="grid justify-center place-content-start min-h-screen gap-16 p-8">
     <h1 class="text-4xl font-bold text-center">TERMO</h1>
 
-    <Row ref="rowComponent" :attempt="attempt" />
+    <Row 
+      ref="rowComponent"
+      :attempt="attempt"
+      :feedback="feedbacks[attempt]"
+    />
   </form>
 </template>
 
@@ -19,32 +23,45 @@
     data() {
       return {
         attempt: 1,
-        csrfToken
+        csrfToken,
+        feedbacks: {} // { attempt: { 1: 'correct', 2: 'wrong', ... } }
       };
     },
     methods: {
       guess() {
-        return this.attempt += 1;
+        return this.attempt++;
       },
 
-      submitForm(inputs) {
+      submitForm() {
         // FORM SUBMIT
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input');
+        const rows = {};
+
+        // Agrupar inputs por linha
+        inputs.forEach(input => {
+          const [, row, , index] = input.name.split('_'); // exemplo: row_1_letter_3
+          if (!rows[row]) rows[row] = {};
+          rows[row][index] = input.value;
+        });
+
+        const guess = {
+          attempt: this.attempt,
+          rows
+        };
+
         axios.post('/guess', {
-          letter_1: inputs[0].value,
-          letter_2: inputs[1].value,
-          letter_3: inputs[2].value,
-          letter_4: inputs[3].value,
-          letter_5: inputs[4].value
+          guess
         }, {
           headers: {
             'X-CSRF-TOKEN': csrfToken,
           }
         })
-        .then(res => console.log(res.data))
+        .then(response => {
+          this.feedbacks[this.attempt] = response.data.feedback;
+          this.guess(); // próxima linha
+        })
         .catch(err => console.error(err));
-        
-        return this.guess();
-        // Aqui você pode chamar this.guess() ou submeter o form
       },
     },
     mounted() {
@@ -61,7 +78,7 @@
             const allFilled = [...inputs].every(input => input.value.length === 1);
             if (allFilled) {
 
-              this.submitForm(inputs);
+              this.submitForm();
             }
             
           }
