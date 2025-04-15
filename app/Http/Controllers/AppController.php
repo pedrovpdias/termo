@@ -47,10 +47,25 @@ class AppController extends Controller
 
     public function guess(Request $request)
     {
-        $guess = $request->input('letter_1').$request->input('letter_2').$request->input('letter_3').$request->input('letter_4').$request->input('letter_5');        
+        $letter_1 = $request->input('letter_1');
+        $letter_2 = $request->input('letter_2');
+        $letter_3 = $request->input('letter_3');
+        $letter_4 = $request->input('letter_4');
+        $letter_5 = $request->input('letter_5');       
+
+        $guess = $letter_1.$letter_2.$letter_3.$letter_4.$letter_5;
         $guess = strtolower($guess);
-        dd($guess);
-        //$word = session('word');
+        echo json_encode(['guess' => $guess]);
+        
+        $word = session('word');
+
+        if($guess == $word) {
+            echo json_encode(['result' => 'win']);
+        }
+        else {
+            echo json_encode(['result' => 'lose']);
+        }
+        exit();
 
     }
 }

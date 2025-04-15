@@ -1,52 +1,61 @@
 <template>
-  <form method="post" action="/guess"  class="grid justify-center place-content-start min-h-screen gap-16 p-8">
-    <h1 class="text-4xl font-bold text-center">
-      TERMO
-    </h1>
+  <form method="post" action="/guess" class="grid justify-center place-content-start min-h-screen gap-16 p-8">
+    <input type="hidden" name="_token" :value="csrfToken">
 
-    <section class="grid gap-4">
-      <div v-for="i in 6" :key="i" :ref="`row_${i}`" class="grid grid-cols-5 gap-4 w-fit mx-auto">
-        <input 
-          v-for="n in 5"
-          :key="n"
-          :ref="`input_${n}`" :id="`input_${n}`"
-          :name="`letter_${n}`"
-          type="text" 
-          class="border-2 border-zinc-300/30 bg-white/5 backdrop-blur size-18 rounded-lg hover:scale-105 focus:scale-105 hover:bg-white/10 focus:bg-white/30 hover:border-zinc-500 focus:border-zinc-300 outline-none transition-all caret-transparent flex text-center text-3xl text-black uppercase font-bold text-white select-none" 
-          maxlength="1" minlength="1"
-          @input="focusNext(n, $event)"
-          autocomplete="off"
-        >
-      </div>
-
-    </section>
+    <h1 class="text-4xl font-bold text-center">TERMO</h1>
+    <Row ref="rowComponent" :attempt="attempt" />
   </form>
 </template>
 
 <script>
+  import { nextTick } from 'vue';
+  import Row from './Row.vue';
+
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
   export default {
+    name: 'App',
+    components: { Row },
     data() {
       return {
-        message: '',
+        attempt: 1,
+        csrfToken
       };
     },
-
     methods: {
-      focusNext(index, event) {
-        const input = event.target;
-        const value = input.value;
+      guess() {
+        return this.attempt += 1;
+      },
 
-        if (value.length === 1 && index < 5) {
-          const nextRef = this.$refs[`input_${(index + 1)}`];
+      submitForm() {
+        // FORM SUBMIT
+        const form = document.querySelector('form');
+        form.submit();
+        
+        return this.guess();
+        // Aqui você pode chamar this.guess() ou submeter o form
+      },
+    },
+    mounted() {
+      window.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter') {
+          await nextTick(); // Make sure refs are available
+          const rowComponent = this.$refs.rowComponent;
 
-          // Se for array, pegue o primeiro elemento
-          const nextInput = Array.isArray(nextRef) ? nextRef[0] : nextRef;
-
-          if (nextInput && typeof nextInput.focus === 'function') {
-            nextInput.focus();
+          if (rowComponent?.rowRefs?.[this.attempt]) {
+            const rowDiv = rowComponent.rowRefs[this.attempt];
+            const inputs = rowDiv.querySelectorAll('input');
+            
+            // Verifique se todos estão preenchidos
+            const allFilled = [...inputs].every(input => input.value.length === 1);
+            if (allFilled) {
+              console.log('Tudo preenchido, pode submeter!');
+              this.submitForm();
+            }
+            
           }
         }
-      }
+      });
     },
   };
 </script>
