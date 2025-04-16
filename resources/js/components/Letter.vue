@@ -15,6 +15,7 @@
       @input="handleInput(n, $event)"
       @focus="handleFocus(n)"
       @keypress="checkValidKey($event)"
+      @keydown="handleKeydown(n, $event)"
     />
   </div>
 </template>
@@ -70,6 +71,16 @@
     }
   }
 
+  function handleKeydown(index, event) {
+    // Se pressionar Backspace num input vazio, volta pro anterior
+    if (event.key === 'Backspace' && letters[index] === '' && index > 1) {
+      const prevInput = inputRefs.value[index - 1];
+      if (prevInput && typeof prevInput.focus === 'function') {
+        prevInput.focus();
+      }
+    }
+  }
+
   // Foca no <input /> certo quando ele for ativado
   function handleFocus(index) {
     const firstInput = inputRefs.value[index];
@@ -94,7 +105,7 @@
 
     // Linha correta = tudo verde, mesmo sem feedback
     if (props.won) {
-      return `${base} bg-emerald-500 text-white outline-emerald-600 uppercase select-none winner-glow`;
+      return `${base} bg-emerald-500 text-white outline-emerald-600 uppercase select-none animate-winner-glow`;
     }
 
     // Linha atual

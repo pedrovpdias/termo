@@ -8,6 +8,7 @@
         :attempt="attempt"
         :feedbacks="feedbacks"
         :won-at-row="wonAtRow"
+        :shakeRow="shakeRow"
       />
     </form>
 
@@ -34,6 +35,7 @@
         csrfToken, // Token CSRF
         feedbacks: {}, // { attempt: { 1: 'correct', 2: 'wrong', ... } }
         wonAtRow: null, // Número da linha que ganhou
+        shakeRow: null, // Número da linha que deve se movimentar (caso a palavra seja inexistente)
       };
     },
     methods: {
@@ -63,7 +65,7 @@
         // Monta a palavra enviada
         const currentWord = rows[this.attempt][1]+rows[this.attempt][2]+rows[this.attempt][3]+rows[this.attempt][4]+rows[this.attempt][5];
         // Verifica se a palavra atual existe
-        const wordExists = axios.post(`check-word/${currentWord}`, 
+        axios.post(`check-word/${currentWord}`, 
         {},
         {
           headers: {
@@ -114,18 +116,7 @@
             }
 
             else {
-              alert('Palavra inválida!');
-              
-              // Limpa os <inputs /> da linha atual
-              const rowComponent = this.$refs.rowComponent;
-              
-              if (rowComponent?.rowRefs?.[this.attempt]) {
-                const rowDiv = rowComponent.rowRefs[this.attempt];
-                const inputs = rowDiv.querySelectorAll('input');
-                inputs.forEach(input => input.value = '');
-              }
-
-              return inputs[0].focus();;
+              this.handleInvalidWord();
               
             }
           })
@@ -139,27 +130,53 @@
         const rowDiv = rowComponent.rowRefs[this.attempt];
         const inputs = rowDiv.querySelectorAll('input');
 
+        // Se pressionar Enter, envia a tentativa
         if (key === 'Enter') {
           this.submitForm();
           return;
         }
 
+        // Se pressionar Backspace, apaga o ultimo input
         if (key === '⌫') {
           for (let i = 4; i >= 0; i--) {
             if (inputs[i].value !== '') {
               inputs[i].value = '';
+              inputs[i].focus(); // foca no input apagado
               break;
             }
           }
           return;
         }
 
+        // Se pressionar uma letra, preenche o primeiro input vazio
         for (let i = 0; i < 5; i++) {
           if (inputs[i].value === '') {
             inputs[i].value = key;
+            inputs[i].focus(); // foca no input preenchido
             break;
           }
         }
+      },
+      handleInvalidWord() {
+        // Ativa a animação de shake
+        this.shakeRow = this.attempt;
+
+        setTimeout(() => {
+          this.shakeRow = null;
+        }, 500);
+
+        // Limpa os <inputs /> da linha atual
+        const rowComponent = this.$refs.rowComponent;
+
+        if (rowComponent?.rowRefs?.[this.attempt]) {
+          const rowDiv = rowComponent.rowRefs[this.attempt];
+          const inputs = rowDiv.querySelectorAll('input');
+          inputs.forEach(input => input.value = '');
+
+          inputs[0].focus();
+        }
+
+        return;
       },
     },
     mounted() {

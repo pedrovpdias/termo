@@ -7,20 +7,33 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+  --animate-winner-glow: glow 1.5s ease-in-out infinite alternate;
+  --animate-shake: shake 0.4s ease-in-out;
 
 }
-
-.winner-glow {
-    animation: glow 1.5s ease-in-out infinite alternate;
-  }
   
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 5px #a7f3d0;
-    }
-    to {
-      box-shadow: 0 0 10px #a7f3d0, 0 0 15px #a7f3d0;
-    }
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px #a7f3d0;
   }
+  to {
+    box-shadow: 0 0 10px #a7f3d0, 0 0 15px #a7f3d0;
+  }
+}
+
+@keyframes shake {
+  0%, 
+  100% { 
+    transform: translateX(0) 
+  }
+  20%,
+  60% { 
+    transform: translateX(-6px) 
+  }
+  40%, 
+  80% { 
+    transform: translateX(6px) 
+  }
+}

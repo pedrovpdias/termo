@@ -1,5 +1,5 @@
 <template>
-  <div class="grid gap-2 text-center">
+  <div class="grid gap-2 text-center z-20">
     <div v-for="row in layout" :key="row" class="flex justify-center gap-1">
       <button
         v-for="key in row"
