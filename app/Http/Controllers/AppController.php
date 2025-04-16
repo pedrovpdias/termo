@@ -10,10 +10,12 @@ class AppController extends Controller
 {
     public function index()
     {   
+        // date_default_timezone_set('UTC');
         date_default_timezone_set('America/Sao_Paulo');
         if(!session('word')) { 
             $secretWord = SecretWord::find(1);
             
+            // Verifica se a palavra secreta foi atualizada hoje
             if($secretWord) {
                 if($secretWord['created_at'] != $secretWord['updated_at']) {
                     $secretWordDate = $secretWord['updated_at'];
@@ -34,6 +36,7 @@ class AppController extends Controller
                 $checkSecretWordDate = false;
             }
 
+            // Verifica se a palavra secreta precisa ser atualizada
             if(!$secretWord || !$checkSecretWordDate) {
                 do {
                     $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/random');
@@ -53,12 +56,13 @@ class AppController extends Controller
                 session(['word' => $secretWord['word']]);
             }
         }  
-        //echo session('word');
+        
         return view('app');
     }
 
     public function guess(Request $request)
     { 
+        // Validar o input
         $inputGuess = $request->input('guess');
         $attempt = $inputGuess['attempt'];
         $rows = $inputGuess['rows'];
@@ -99,6 +103,7 @@ class AppController extends Controller
                 }
             }
 
+            // Se a letra não foi encontrada, marcar como wrong
             if (!$found) {
                 $feedback[$i + 1] = 'wrong';
             }

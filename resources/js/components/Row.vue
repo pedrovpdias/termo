@@ -16,22 +16,26 @@
   import { ref } from 'vue';
   import Letter from './Letter.vue';
 
-  const props = defineProps(['attempt', 'feedbacks', 'wonAtRow']);
-  const rowRefs = ref({});
+  // Pegar as props
+  const props = defineProps(['attempt', 'feedbacks', 'wonAtRow']); // feedbacks: { 1: { 1: 'correct', 2: 'wrong', ... }, 2: { 1: 'correct', 2: 'wrong', ... }, ... }
+  const rowRefs = ref({}); // { 1: <div>, 2: <div>, ... }
 
+  // Repassa o evento para <App.vue />
   const emit = defineEmits(['ready']);
 
+  // Adiciona a lógica das classes CSS
   function setRowRef(row, el) {
     if (el) {
       rowRefs.value[row] = el;
     }
   }
 
+  // Repassa o evento para <App.vue />
   function onReady() {
     emit('ready'); // repassa o evento para App.vue
   }
 
-  // 🔥 This exposes rowRefs to the parent (App.vue)
+  // Expoe para o componente pai (<App.vue />)
   defineExpose({
     rowRefs
   });
