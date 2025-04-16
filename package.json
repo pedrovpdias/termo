@@ -14,6 +14,7 @@
         "vite": "^6.2.4"
     },
     "dependencies": {
-        "@vitejs/plugin-vue": "^5.2.3"
+        "@vitejs/plugin-vue": "^5.2.3",
+        "canvas-confetti": "^1.9.3"
     }
 }

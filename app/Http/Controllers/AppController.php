@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Http;
 class AppController extends Controller
 {
     public function index()
-    {   
-        // date_default_timezone_set('UTC');
+    {        
+        // Define o fuso horário
         date_default_timezone_set('America/Sao_Paulo');
         if(!session('word')) { 
             $secretWord = SecretWord::find(1);
@@ -104,20 +104,20 @@ class AppController extends Controller
                 }
             }
 
-            // Se a letra não foi encontrada, marcar como wrong
+            // Se a letra não foi encontrada, marcar como "wrong"
             if (!$found) {
                 $feedback[$i + 1] = 'wrong';
             }
         }
         
-        return response()->json(['feedback' => $feedback]);
+        return response()->json(['feedback' => $feedback, 'correctWord' => session('word')]);
     }
 
     // Verifica se a palavra existe
     public function checkWord($word)
     {
         // Busca a palavra do palpite na API
-        $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/word/' . $word);
+        $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/word/' . $word . '/1');
         $data = $response->json();
 
         // Verifica se a palavra existe

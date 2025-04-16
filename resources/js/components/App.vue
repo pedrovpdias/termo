@@ -13,14 +13,27 @@
     </form>
 
     <Keyboard @key="handleVirtualKey" />
+
+    <GameModal
+      :show="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      :word-of-the-day="correctWord"
+    />
   </main>
 </template>
 
+
+
 <script>
   import { nextTick } from 'vue';
+  
   import Row from './Row.vue';
   import Keyboard from './Keyboard.vue';
+  import GameModal from './GameModal.vue';
+  
   import logo from '../../images/logo.svg';
+  import confetti from 'canvas-confetti';
   
   import axios from 'axios';
 
@@ -29,7 +42,7 @@
 
   export default {
     name: 'App',
-    components: { Row, Keyboard },
+    components: { Row, Keyboard, GameModal },
     data() {
       return {
         logo,
@@ -38,6 +51,12 @@
         feedbacks: {}, // { attempt: { 1: 'correct', 2: 'wrong', ... } }
         wonAtRow: null, // Número da linha que ganhou
         shakeRow: null, // Número da linha que deve se movimentar (caso a palavra seja inexistente)
+        showModal: false, // Exibe o modal
+        modalTitle: '', // Título do modal
+        modalMessage: '', // Mensagem do modal
+        correctWord: '', // Palavra correta
+        
+        
       };
     },
     methods: {
@@ -67,7 +86,6 @@
           rows[row][index] = input.value;
         });
 
-
         const guess = {
           attempt: this.attempt,
           rows,
@@ -75,6 +93,7 @@
 
         // Monta a palavra enviada
         const currentWord = rows[this.attempt][1]+rows[this.attempt][2]+rows[this.attempt][3]+rows[this.attempt][4]+rows[this.attempt][5];
+        
         // Verifica se a palavra atual existe
         axios.post(`check-word/${currentWord}`, 
         {},
@@ -109,12 +128,24 @@
                 // Verifica se ganhou
                 if (win) {
                   this.wonAtRow = this.attempt;
-                  alert('Você ganhou!');
+
+                  // Exibe e configura o modal em caso de vitória
+                  this.modalTitle = 'Vitória!';
+                  this.modalMessage = 'Parabéns, você acertou a palavra do dia!';
+                  this.correctWord = currentWord;
+                  this.showModal = true;
+
+                  // Exibe animação de "confetti"
+                  this.showConfetti();
                 }
 
                 // Verifica se perdeu
                 if (!win && this.attempt === 6) {
-                  alert('Você perdeu!');
+                  // Exibe e configura o modal em caso de derrota
+                  this.modalTitle = 'Fim de jogo!';
+                  this.modalMessage = 'Você usou todas as tentativas.';
+                  this.correctWord = response.data.correctWord; // talvez você precise recuperar isso do backend
+                  this.showModal = true;
                 }
 
                 // Se não perdeu ou ainda não ganhou, passa para a próxima tentativa
@@ -198,6 +229,14 @@
         }
 
         return;
+      },
+
+      showConfetti() {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
       },
     },
     mounted() {

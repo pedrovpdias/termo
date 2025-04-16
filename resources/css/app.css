@@ -16,10 +16,10 @@
   
 @keyframes glow {
   from {
-    box-shadow: 0 0 5px #a7f3d0;
+    box-shadow: 0 0 2px #a7f3d033;
   }
   to {
-    box-shadow: 0 0 10px #a7f3d0, 0 0 15px #a7f3d0;
+    box-shadow: 0 0 8px #a7f3d099, 0 0 10px #a7f3d099;
   }
 }
 
