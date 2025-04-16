@@ -4,7 +4,7 @@
       <button
         v-for="key in row"
         :key="key"
-        class="px-2 py-1 bg-zinc-700 text-white rounded"
+        class="px-2 py-1 bg-zinc-700 text-white rounded hover:bg-zinc-500 active:bg-zinc-800 focus:bg-zinc-500 outline-none"
         @click="$emit('key', key)"
       >
         {{ key }}
@@ -15,8 +15,8 @@
 
 <script setup>
 const layout = [
-  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-  ['⌫', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Enter']
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '⌫'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Enter'],
+  ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
 ];
 </script>

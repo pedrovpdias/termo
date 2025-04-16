@@ -101,27 +101,27 @@
 
   // Adiciona a lógica das classes CSS
   function inputClass(index) {
-    const base = 'outline-2 size-18 rounded-lg text-3xl font-bold text-center transition-all select-none';
+    const base = 'border-2 size-18 rounded-lg text-3xl font-bold text-center transition-all';
 
     // Linha correta = tudo verde, mesmo sem feedback
     if (props.won) {
-      return `${base} bg-emerald-500 text-white outline-emerald-600 uppercase select-none animate-winner-glow`;
+      return `${base} bg-emerald-500 text-white font-black border-emerald-600 uppercase select-none animate-winner-glow outline-none pointer-events-none`;
     }
 
     // Linha atual
     if (props.attempt !== props.row) {
       const colorMap = {
-        correct: 'bg-emerald-500 text-white outline-emerald-600 uppercase select-none',
-        misplaced: 'bg-orange-300 text-white outline-orange-400 uppercase select-none',
-        wrong: 'bg-zinc-600 text-white outline-zinc-700 uppercase select-none',
+        correct: 'bg-emerald-500 text-white font-black border-emerald-600 uppercase',
+        misplaced: 'bg-orange-300 text-white font-black border-orange-400 uppercase',
+        wrong: 'bg-zinc-600 text-white font-black border-zinc-700 uppercase',
       };
 
       // Adiciona a lógica das classes CSS
-      const feedbackClass = props.feedback?.[index] ? colorMap[props.feedback[index]] : 'bg-white/5 outline-zinc-300/30 uppercase text-white select-none';
+      const feedbackClass = props.feedback?.[index] ? colorMap[props.feedback[index]] : 'bg-white/5 border-zinc-300/30 pointer-events-none';
       return `${base} ${feedbackClass}`;
     }
 
-    return `${base} bg-white/20 outline-zinc-300 text-white uppercase caret-transparent z-50 border-3 border-transparent focus:border-emerald-300/50 select-none`;
+    return `${base} bg-white/20 border-zinc-300 text-white font-black uppercase caret-transparent z-50 outline-none focus:border-indigo-300 focus:bg-white/30`;
   }
 
   // Verifica se o valor digitado é uma letra

@@ -1,7 +1,7 @@
 <template>
-  <main class="grid justify-center place-content-start min-h-screen gap-16 p-8 z-10">
-    <form method="post" action="/guess" class="grid justify-center place-content-start gap-16 p-8 z-10">
-      <h1 class="text-4xl font-bold text-center">TERMO</h1>
+  <main class="grid justify-center place-content-start min-h-screen p-8 z-10">
+    <form method="post" action="/guess" class="grid justify-center place-content-start gap-8 p-8 z-10">
+      <img :src="logo" alt="Termo" class="w-38 h-auto mx-auto" />
 
       <Row 
         ref="rowComponent"
@@ -20,6 +20,7 @@
   import { nextTick } from 'vue';
   import Row from './Row.vue';
   import Keyboard from './Keyboard.vue';
+  import logo from '../../images/logo.svg';
   
   import axios from 'axios';
 
@@ -31,6 +32,7 @@
     components: { Row, Keyboard },
     data() {
       return {
+        logo,
         attempt: 1, // Tentativa
         csrfToken, // Token CSRF
         feedbacks: {}, // { attempt: { 1: 'correct', 2: 'wrong', ... } }
@@ -40,7 +42,16 @@
     },
     methods: {
       guess() {
-        return this.attempt++; // Incrementa a tentativa
+        this.attempt++; // Incrementa a tentativa
+        
+        // Foca no primeiro <input /> da linha
+        if (this.attempt > 6) return;
+
+        else {
+          this.focusFirstInput();
+
+          return;
+        }
       },
 
       submitForm() {
@@ -102,7 +113,7 @@
                 }
 
                 // Verifica se perdeu
-                if (this.attempt === 6) {
+                if (!win && this.attempt === 6) {
                   alert('Você perdeu!');
                 }
 
@@ -122,6 +133,16 @@
           })
           .catch(err => console.error(err));
         
+      },
+
+      // Foca no primeiro <input /> da linha
+      async focusFirstInput() {
+        await nextTick();
+        const row = this.$refs.rowComponent.rowRefs[this.attempt];
+        if (row) {
+          const input = row.querySelector('input');
+          if (input) input.focus();
+        }
       },
 
       // Função para lidar com as teclas virtuais
@@ -201,6 +222,27 @@
           }
         }
       });
+
+      // Bloqueia o click fora dos <inputs /> ou do teclado virtual
+      window.addEventListener('click', e => {
+        e.preventDefault();
+
+        if (e.target.tagName != 'INPUT' && e.target.tagName != 'BUTTON') {
+          // Foca no primeiro <input /> da linha ativa
+          const rowComponent = this.$refs.rowComponent;
+          const rowDiv = rowComponent.rowRefs[this.attempt];
+          const inputs = rowDiv.querySelectorAll('input');
+
+          for (let i = 0; i < 5; i++) {
+            if (inputs[i].value === '') {
+              inputs[i].focus();
+              break;
+            }
+          }
+        }
+
+      });
+      
     },
   };
 </script>
