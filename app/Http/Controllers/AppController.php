@@ -60,6 +60,7 @@ class AppController extends Controller
         return view('app');
     }
 
+    // Palpites
     public function guess(Request $request)
     { 
         // Validar o input
@@ -110,5 +111,22 @@ class AppController extends Controller
         }
         
         return response()->json(['feedback' => $feedback]);
+    }
+
+    // Verifica se a palavra existe
+    public function checkWord($word)
+    {
+        // Busca a palavra do palpite na API
+        $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/word/' . $word);
+        $data = $response->json();
+
+        // Verifica se a palavra existe
+        if(count($data) == 0) {
+            return response()->json(['exists' => false]);
+        }
+
+        else {
+            return response()->json(['exists' => true]);
+        }
     }
 }

@@ -54,43 +54,77 @@
           rows,
         };
 
-        // Enviar a tentativa
-        axios.post('/guess', {
-          guess
-        }, {
+        // Monta a palavra enviada
+        const currentWord = rows[this.attempt][1]+rows[this.attempt][2]+rows[this.attempt][3]+rows[this.attempt][4]+rows[this.attempt][5];
+        // Verifica se a palavra atual existe
+        const wordExists = axios.post(`check-word/${currentWord}`, 
+        {},
+        {
           headers: {
             'X-CSRF-TOKEN': csrfToken,
           }
         })
-        .then(response => {
-          this.feedbacks[this.attempt] = response.data.feedback;
-          
-          let win = true;
+          .then(response => response.data)
+          .then(data => data.exists)
+          .then(exists => {
+            if(exists){
+              // Enviar a tentativa
+              axios.post('/guess', {
+                guess
+              }, {
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken,
+                }
+              })
+              .then(response => {
+                this.feedbacks[this.attempt] = response.data.feedback;
+                
+                let win = true;
 
-          for (let i = 1; i <= 5; i++) {
-            if (this.feedbacks[this.attempt][i] !== 'correct') {
-              win = false;
+                for (let i = 1; i <= 5; i++) {
+                  if (this.feedbacks[this.attempt][i] !== 'correct') {
+                    win = false;
+                  }
+                }
+
+                // Verifica se ganhou
+                if (win) {
+                  this.wonAtRow = this.attempt;
+                  alert('Você ganhou!');
+                }
+
+                // Verifica se perdeu
+                if (this.attempt === 6) {
+                  alert('Você perdeu!');
+                }
+
+                // Se não perdeu ou ainda não ganhou, passa para a próxima tentativa
+                if(!win && this.attempt !== 6) {
+                  this.guess();
+                }
+                
+              })
+              .catch(err => console.error(err));
             }
-          }
 
-          // Verifica se ganhou
-          if (win) {
-            this.wonAtRow = this.attempt;
-            alert('Você ganhou!');
-          }
+            else {
+              alert('Palavra inválida!');
+              
+              // Limpa os <inputs /> da linha atual
+              const rowComponent = this.$refs.rowComponent;
+              
+              if (rowComponent?.rowRefs?.[this.attempt]) {
+                const rowDiv = rowComponent.rowRefs[this.attempt];
+                const inputs = rowDiv.querySelectorAll('input');
+                inputs.forEach(input => input.value = '');
+              }
 
-          // Verifica se perdeu
-          if (this.attempt === 6) {
-            alert('Você perdeu!');
-          }
-
-          // Se não perdeu ou ainda não ganhou, passa para a próxima tentativa
-          if(!win && this.attempt !== 6) {
-            this.guess();
-          }
-          
-        })
-        .catch(err => console.error(err));
+              return inputs[0].focus();;
+              
+            }
+          })
+          .catch(err => console.error(err));
+        
       },
     },
     mounted() {
