@@ -68,12 +68,12 @@ class AppController extends Controller
         $rows = $inputGuess['rows'];
 
         $guess = $rows[$attempt];
-        $target = strtoupper('MELAO'); // ou uma palavra dinâmica
+        $target = strtoupper(session('word')); // Palavra correta
 
         $feedback = [];
         $used = array_fill(0, 5, false); // Letras da palavra correta já utilizadas
 
-        // Primeiro: marcar letras corretas
+        // Marca as letras corretas
         for ($i = 0; $i < 5; $i++) {
             $letter = strtoupper($guess[$i + 1]);
             $targetLetter = $target[$i];
@@ -84,7 +84,7 @@ class AppController extends Controller
             }
         }
 
-        // Segundo: marcar letras misplaced
+        // Marca as letras "misplaced"
         for ($i = 0; $i < 5; $i++) {
             if (isset($feedback[$i + 1]) && $feedback[$i + 1] === 'correct') {
                 continue;
@@ -92,7 +92,7 @@ class AppController extends Controller
 
             $letter = strtoupper($guess[$i + 1]);
 
-            // Procurar essa letra em outra posição da palavra
+            // Procurar essa letra "misplaced" em outra posição da palavra
             $found = false;
             for ($j = 0; $j < 5; $j++) {
                 if (!$used[$j] && $letter === $target[$j]) {
