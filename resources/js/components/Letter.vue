@@ -25,7 +25,7 @@
 
   const inputRefs = ref({});
 
-  const props = defineProps(['attempt', 'row', 'feedback']);
+  const props = defineProps(['attempt', 'row', 'feedback', 'won']);
 
   // Mantemos o array para os valores das letras
   const letters = reactive({ 1: '', 2: '', 3: '', 4: '', 5: '' });
@@ -86,14 +86,19 @@
   function inputClass(index) {
     const base = 'outline-2 size-18 rounded-lg text-3xl font-bold text-center transition-all';
 
+    // Linha correta = tudo verde, mesmo sem feedback
+    if (props.won) {
+      return `${base} bg-green-500 text-white outline-green-600 uppercase`;
+    }
+
     if (props.attempt !== props.row) {
       const colorMap = {
-        correct: 'bg-green-500 text-white outline-green-600',
-        misplaced: 'bg-yellow-400 text-white outline-yellow-500',
-        wrong: 'bg-zinc-600 text-white outline-zinc-700',
+        correct: 'bg-green-500 text-white outline-green-600 uppercase',
+        misplaced: 'bg-yellow-400 text-white outline-yellow-500 uppercase',
+        wrong: 'bg-zinc-600 text-white outline-zinc-700 uppercase',
       };
 
-      const feedbackClass = props.feedback?.[index] ? colorMap[props.feedback[index]] : 'bg-white/5 outline-zinc-300/30 text-transparent';
+      const feedbackClass = props.feedback?.[index] ? colorMap[props.feedback[index]] : 'bg-white/5 outline-zinc-300/30 uppercase text-white';
       return `${base} ${feedbackClass}`;
     }
 

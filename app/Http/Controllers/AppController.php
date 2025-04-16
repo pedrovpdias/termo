@@ -58,27 +58,52 @@ class AppController extends Controller
     }
 
     public function guess(Request $request)
-    { dd($request->all());
-        $guess = $request->input('rows')[$request->input('attempt')];
+    { 
+        $inputGuess = $request->input('guess');
+        $attempt = $inputGuess['attempt'];
+        $rows = $inputGuess['rows'];
+
+        $guess = $rows[$attempt];
         $target = strtoupper('MELAO'); // ou uma palavra dinâmica
 
         $feedback = [];
+        $used = array_fill(0, 5, false); // Letras da palavra correta já utilizadas
 
-        for ($i = 1; $i <= 5; $i++) {
-            $letter = strtoupper($guess[$i]);
-            $targetLetter = $target[$i - 1];
+        // Primeiro: marcar letras corretas
+        for ($i = 0; $i < 5; $i++) {
+            $letter = strtoupper($guess[$i + 1]);
+            $targetLetter = $target[$i];
 
             if ($letter === $targetLetter) {
-                $feedback[$i] = 'correct'; // verde
-            } elseif (str_contains($target, $letter)) {
-                $feedback[$i] = 'misplaced'; // amarelo
-            } else {
-                $feedback[$i] = 'wrong'; // cinza
+                $feedback[$i + 1] = 'correct';
+                $used[$i] = true; // marcar essa posição como usada
             }
         }
 
-        return response()->json([
-            'feedback' => $feedback
-        ]);
+        // Segundo: marcar letras misplaced
+        for ($i = 0; $i < 5; $i++) {
+            if (isset($feedback[$i + 1]) && $feedback[$i + 1] === 'correct') {
+                continue;
+            }
+
+            $letter = strtoupper($guess[$i + 1]);
+
+            // Procurar essa letra em outra posição da palavra
+            $found = false;
+            for ($j = 0; $j < 5; $j++) {
+                if (!$used[$j] && $letter === $target[$j]) {
+                    $feedback[$i + 1] = 'misplaced';
+                    $used[$j] = true;
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $feedback[$i + 1] = 'wrong';
+            }
+        }
+        
+        return response()->json(['feedback' => $feedback]);
     }
 }

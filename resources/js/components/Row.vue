@@ -4,7 +4,8 @@
       <Letter 
         :attempt="attempt" 
         :row="row"
-        :feedback="feedback"
+        :feedback="props.feedbacks[row]"
+        :won="props.wonAtRow === row"
         @ready="onReady" 
       />
     </div>
@@ -15,7 +16,7 @@
   import { ref } from 'vue';
   import Letter from './Letter.vue';
 
-  const props = defineProps(['attempt', 'row', 'feedback']);
+  const props = defineProps(['attempt', 'feedbacks', 'wonAtRow']);
   const rowRefs = ref({});
 
   const emit = defineEmits(['ready']);

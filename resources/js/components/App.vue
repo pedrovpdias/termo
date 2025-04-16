@@ -5,7 +5,8 @@
     <Row 
       ref="rowComponent"
       :attempt="attempt"
-      :feedback="feedbacks[attempt]"
+      :feedbacks="feedbacks"
+      :won-at-row="wonAtRow"
     />
   </form>
 </template>
@@ -24,7 +25,8 @@
       return {
         attempt: 1,
         csrfToken,
-        feedbacks: {} // { attempt: { 1: 'correct', 2: 'wrong', ... } }
+        feedbacks: {}, // { attempt: { 1: 'correct', 2: 'wrong', ... } }
+        wonAtRow: null,
       };
     },
     methods: {
@@ -40,14 +42,14 @@
 
         // Agrupar inputs por linha
         inputs.forEach(input => {
-          const [row, , index] = input.name.split('_'); // exemplo: row_1_letter_3
+          const [, row, , index] = input.name.split('_'); // exemplo: row_1_letter_3
           if (!rows[row]) rows[row] = {};
           rows[row][index] = input.value;
         });
 
         const guess = {
           attempt: this.attempt,
-          rows
+          rows,
         };
 
         axios.post('/guess', {
@@ -59,7 +61,28 @@
         })
         .then(response => {
           this.feedbacks[this.attempt] = response.data.feedback;
-          this.guess(); // próxima linha
+          
+          let win = true;
+
+          for (let i = 1; i <= 5; i++) {
+            if (this.feedbacks[this.attempt][i] !== 'correct') {
+              win = false;
+            }
+          }
+
+          if (win) {
+            this.wonAtRow = this.attempt;
+            alert('Você ganhou!');
+          }
+
+          if (this.attempt === 6) {
+            alert('Você perdeu!');
+          }
+
+          if(!win && this.attempt !== 6) {
+            this.guess();
+          }
+          
         })
         .catch(err => console.error(err));
       },
