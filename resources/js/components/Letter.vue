@@ -14,6 +14,7 @@
       autocomplete="off"
       @input="handleInput(n, $event)"
       @focus="handleFocus(n)"
+      @keypress="checkValidKey($event)"
     />
   </div>
 </template>
@@ -110,5 +111,13 @@
     }
 
     return `${base} bg-white/20 outline-zinc-300 text-white uppercase caret-transparent z-50 border-3 border-transparent focus:border-emerald-300/50 select-none`;
+  }
+
+  // Verifica se o valor digitado é uma letra
+  function checkValidKey(event) {
+    const key = event.key;
+    if (key.length === 1 && !/^[a-zA-Z]$/.test(key)) {
+      event.preventDefault();
+    }
   }
 </script>
