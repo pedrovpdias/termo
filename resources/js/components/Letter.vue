@@ -94,7 +94,7 @@
 
     // Linha correta = tudo verde, mesmo sem feedback
     if (props.won) {
-      return `${base} bg-emerald-500 text-white outline-emerald-600 uppercase select-none`;
+      return `${base} bg-emerald-500 text-white outline-emerald-600 uppercase select-none winner-glow`;
     }
 
     // Linha atual

@@ -1,19 +1,25 @@
 <template>
-  <form method="post" action="/guess" class="grid justify-center place-content-start min-h-screen gap-16 p-8 z-10">
-    <h1 class="text-4xl font-bold text-center">TERMO</h1>
+  <main class="grid justify-center place-content-start min-h-screen gap-16 p-8 z-10">
+    <form method="post" action="/guess" class="grid justify-center place-content-start gap-16 p-8 z-10">
+      <h1 class="text-4xl font-bold text-center">TERMO</h1>
 
-    <Row 
-      ref="rowComponent"
-      :attempt="attempt"
-      :feedbacks="feedbacks"
-      :won-at-row="wonAtRow"
-    />
-  </form>
+      <Row 
+        ref="rowComponent"
+        :attempt="attempt"
+        :feedbacks="feedbacks"
+        :won-at-row="wonAtRow"
+      />
+    </form>
+
+    <Keyboard @key="handleVirtualKey" />
+  </main>
 </template>
 
 <script>
   import { nextTick } from 'vue';
   import Row from './Row.vue';
+  import Keyboard from './Keyboard.vue';
+  
   import axios from 'axios';
 
   // Pegar o token CSRF
@@ -21,7 +27,7 @@
 
   export default {
     name: 'App',
-    components: { Row },
+    components: { Row, Keyboard },
     data() {
       return {
         attempt: 1, // Tentativa
@@ -125,6 +131,35 @@
           })
           .catch(err => console.error(err));
         
+      },
+
+      // Função para lidar com as teclas virtuais
+      handleVirtualKey(key) {
+        const rowComponent = this.$refs.rowComponent;
+        const rowDiv = rowComponent.rowRefs[this.attempt];
+        const inputs = rowDiv.querySelectorAll('input');
+
+        if (key === 'Enter') {
+          this.submitForm();
+          return;
+        }
+
+        if (key === '⌫') {
+          for (let i = 4; i >= 0; i--) {
+            if (inputs[i].value !== '') {
+              inputs[i].value = '';
+              break;
+            }
+          }
+          return;
+        }
+
+        for (let i = 0; i < 5; i++) {
+          if (inputs[i].value === '') {
+            inputs[i].value = key;
+            break;
+          }
+        }
       },
     },
     mounted() {
