@@ -19,6 +19,7 @@
       :title="modalTitle"
       :message="modalMessage"
       :word-of-the-day="correctWord"
+      :next-game="nextGameCountdown"
     />
   </main>
 </template>
@@ -54,9 +55,8 @@
         showModal: false, // Exibe o modal
         modalTitle: '', // Título do modal
         modalMessage: '', // Mensagem do modal
-        correctWord: '', // Palavra correta
-        
-        
+        correctWord: '', // Palavra correta    
+        nextGameCountdown: '', // Contagem regressiva para o próximo jogo
       };
     },
     methods: {
@@ -238,6 +238,21 @@
           origin: { y: 0.6 },
         });
       },
+
+      // Atualiza a contagem regressiva para o próximo jogo
+      updateCountdown() {
+        const now = new Date();
+        const tomorrow = new Date();
+        tomorrow.setHours(24, 0, 0, 0); // meia-noite de hoje pra amanhã
+
+        const diff = tomorrow - now;
+
+        const hours = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, '0');
+        const minutes = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
+        const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+
+        this.nextGameCountdown = `${hours}:${minutes}:${seconds}`;
+      },
     },
     mounted() {
       // Se pressionar Enter, envia a tentativa
@@ -282,6 +297,9 @@
 
       });
       
+      // Contagem regressiva
+      this.updateCountdown();
+      setInterval(this.updateCountdown, 1000);
     },
   };
 </script>
