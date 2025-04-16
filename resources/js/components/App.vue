@@ -1,7 +1,7 @@
 <template>
   <main class="grid justify-center place-content-start min-h-screen p-8 z-10">
     <form method="post" action="/guess" class="grid justify-center place-content-start gap-8 p-8 z-10">
-      <img :src="logo" alt="Termo" class="w-38 h-auto mx-auto" />
+      <img :src="logo" alt="Termo" class="w-40 h-auto mx-auto" />
 
       <Row 
         ref="rowComponent"
@@ -9,6 +9,7 @@
         :feedbacks="feedbacks"
         :won-at-row="wonAtRow"
         :shakeRow="shakeRow"
+        @ready="onRowReady"
       />
     </form>
 
@@ -25,8 +26,6 @@
   </main>
 </template>
 
-
-
 <script>
   import { nextTick } from 'vue';
   
@@ -34,7 +33,7 @@
   import Keyboard from './Keyboard.vue';
   import GameModal from './GameModal.vue';
   
-  import logo from '../../images/logo.svg';
+  import logo from '../../images/logo.png';
   import confetti from 'canvas-confetti';
   
   import axios from 'axios';
@@ -160,7 +159,9 @@
                 if(!win && this.attempt !== 6) {
                   this.guess();
                 }
-                
+
+                // Salva o estado do jogo no localStorage
+                this.saveGameState();                
               })
               .catch(err => console.error(err));
             }
@@ -196,29 +197,29 @@
           return;
         }
 
-        // Se pressionar Backspace, apaga o ultimo input
+        // Se pressionar Backspace, apaga o ultimo <input />
         if (key === '⌫') {
           for (let i = 4; i >= 0; i--) {
             if (inputs[i].value !== '') {
               inputs[i].value = '';
-              inputs[i].focus(); // foca no input apagado
+              inputs[i].focus(); // foca no <input /> apagado
               break;
             }
           }
           return;
         }
 
-        // Se pressionar uma letra, preenche o primeiro input vazio
+        // Se pressionar uma letra, preenche o primeiro <input /> vazio
         for (let i = 0; i < 5; i++) {
           if (inputs[i].value === '') {
             inputs[i].value = key;
-            inputs[i].focus(); // foca no input preenchido
+            inputs[i].focus(); // foca no <input /> preenchido
             break;
           }
         }
       },
       handleInvalidWord() {
-        // Ativa a animação de shake
+        // Ativa a animação "shake"
         this.shakeRow = this.attempt;
 
         setTimeout(() => {
@@ -251,7 +252,7 @@
       updateCountdown() {
         const now = new Date();
         const tomorrow = new Date();
-        tomorrow.setHours(24, 0, 0, 0); // meia-noite de hoje pra amanhã
+        tomorrow.setHours(24, 0, 0, 0); // Reseta à meia-noite
 
         const diff = tomorrow - now;
 
@@ -281,8 +282,96 @@
 
         return output;
       },
+
+      // Salva o estado do jogo no localStorage
+      saveGameState() {
+        // Pegar o conteúdo das letras digitadas
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input');
+        const letters = {};
+
+        inputs.forEach(input => {
+          const [, row, , index] = input.name.split('_'); // row_1_letter_3
+          if (!letters[row]) letters[row] = {};
+          letters[row][index] = input.value;
+        });
+
+        const state = {
+          attempt: this.attempt,
+          feedbacks: this.feedbacks,
+          wonAtRow: this.wonAtRow,
+          letters: letters, 
+        };
+
+        const todayKey = `termo-${new Date().toISOString().split('T')[0]}`; // exemplo: termo-2025-04-16
+        localStorage.setItem(todayKey, JSON.stringify(state));
+
+        
+      },
+
+      // Carrega o estado do jogo do localStorage
+      loadGameState() {
+        const todayKey = `termo-${new Date().toISOString().split('T')[0]}`;
+        const saved = localStorage.getItem(todayKey);
+
+        if (saved) {
+          const state = JSON.parse(saved);
+          this.attempt = state.attempt;
+          this.feedbacks = state.feedbacks;
+          this.wonAtRow = state.wonAtRow;
+
+          // Preencher <inputs /> com letras restauradas
+          this.$nextTick(() => {
+            const rowComponent = this.$refs.rowComponent;
+            if (!rowComponent?.rowRefs) return;
+
+            Object.keys(state.letters || {}).forEach(rowKey => {
+              const rowDiv = rowComponent.rowRefs[rowKey];
+              const inputs = rowDiv?.querySelectorAll('input');
+              if (!inputs) return;
+
+              for (let i = 0; i < 5; i++) {
+                const letter = state.letters[rowKey][i + 1]; // 1-indexed
+                if (letter) {
+                  inputs[i].value = letter;
+                }
+              }
+            });
+
+            // foca no primeiro input vazio da linha atual
+            const rowDiv = rowComponent.rowRefs[this.attempt];
+            const inputs = rowDiv?.querySelectorAll('input');
+            if (inputs) {
+              for (let i = 0; i < 5; i++) {
+                if (inputs[i].value === '') {
+                  inputs[i].focus();
+                  break;
+                }
+              }
+            }
+          });
+        }
+
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('termo-') && key !== todayKey) {
+            localStorage.removeItem(key);
+          }
+        });
+      },
+
+      onRowReady() {
+        // Após garantir que os refs estão disponíveis, foca no <input />
+        const rowComponent = this.$refs.rowComponent;
+        const rowDiv = rowComponent?.rowRefs?.[this.attempt];
+        if (rowDiv) {
+          const inputs = rowDiv.querySelectorAll('input');
+          if (inputs.length) inputs[0].focus();
+        }
+      },
     },
     mounted() {
+      this.loadGameState();
+
       // Se pressionar Enter, envia a tentativa
       window.addEventListener('keydown', async (event) => {
         if (event.key === 'Enter') {
