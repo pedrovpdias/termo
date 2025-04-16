@@ -20,6 +20,7 @@
       :message="modalMessage"
       :word-of-the-day="correctWord"
       :next-game="nextGameCountdown"
+      :result-text="resultText"
     />
   </main>
 </template>
@@ -57,6 +58,7 @@
         modalMessage: '', // Mensagem do modal
         correctWord: '', // Palavra correta    
         nextGameCountdown: '', // Contagem regressiva para o próximo jogo
+        resultText: '', // Mensagem de resultado do jogo para compartilhar
       };
     },
     methods: {
@@ -137,6 +139,9 @@
 
                   // Exibe animação de "confetti"
                   this.showConfetti();
+
+                  // Gera o texto de compartilhamento
+                  this.resultText = this.generateShareText();
                 }
 
                 // Verifica se perdeu
@@ -146,6 +151,9 @@
                   this.modalMessage = 'Você usou todas as tentativas.';
                   this.correctWord = response.data.correctWord; // talvez você precise recuperar isso do backend
                   this.showModal = true;
+
+                  // Gera o texto de compartilhamento
+                  this.resultText = this.generateShareText();
                 }
 
                 // Se não perdeu ou ainda não ganhou, passa para a próxima tentativa
@@ -252,6 +260,26 @@
         const seconds = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
 
         this.nextGameCountdown = `${hours}:${minutes}:${seconds}`;
+      },
+
+      generateShareText() {
+        const emojis = {
+          correct: '🟩',
+          wrong: '⬜',
+          present: '🟨',
+        };
+
+        let output = `Joguei Termo do dia ${new Date().toLocaleDateString('pt-BR')} em ${this.wonAtRow || 6}/6\n\n`;
+
+        for (let i = 1; i <= (this.wonAtRow || 6); i++) {
+          const feedbackRow = this.feedbacks[i];
+          for (let j = 1; j <= 5; j++) {
+            output += emojis[feedbackRow[j]];
+          }
+          output += '\n';
+        }
+
+        return output;
       },
     },
     mounted() {

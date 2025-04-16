@@ -7,6 +7,8 @@ import Letter from './components/Letter.vue';
 import Keyboard from './components/Keyboard.vue';
 import GameModal from './components/GameModal.vue';
 
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 const app = createApp({});
 
 app.component('app', App);
