@@ -46,7 +46,6 @@ Os dados persistentes são armazenados em um banco **MySQL**, utilizando migrati
 
 ## 🚀 Instalação
 
-```bash
 # Clone o repositório
 git clone https://github.com/pedrovpdias/termo.git
 cd termo
@@ -68,20 +67,22 @@ php artisan migrate
 # Inicie o servidor Laravel
 php artisan serve
 
-📁 Estrutura do Projeto
+---
 
-bash
-Copiar
-Editar
-/frontend     # Aplicação Vue 3
-/backend      # API Laravel
-/public/sounds/victory-horn.mp3  # Efeito sonoro da vitória
+## 📁 Estrutura do Projeto
 
-👨‍💻 Sobre o Projeto
+- /frontend     # Aplicação Vue 3
+- /backend      # API Laravel 12
+
+---
+
+## 👨‍💻 Sobre o Projeto
 Este projeto foi desenvolvido com foco em aprendizado, explorando integrações entre frontend e backend, animações e interações com o usuário. É também uma forma divertida de aplicar boas práticas com Vue e Laravel.
 
 Feito com 💻 + ☕ + um pouquinho de sorte nas tentativas por Pedro Dias
 
+---
+
 ## 🖼️ Preview
 
-![Demo do Jogo](public/assets/demo.gif)
+![Demo](https://github.com/pedrovpdias/termo/blob/main/public/assets/demo.gif?raw=true)
