@@ -4,6 +4,8 @@ Este é um projeto pessoal inspirado no popular jogo "Termo", desenvolvido com *
 
 Criado como um exercício de aprendizado e experimentação com tecnologias modernas do ecossistema web.
 
+🎮 Jogue agora: [termo.laravel.cloud](https://termo.laravel.cloud/)
+
 ---
 
 ## ✨ Funcionalidades
