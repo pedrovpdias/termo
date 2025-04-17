@@ -70,9 +70,6 @@ php artisan serve
 
 📁 Estrutura do Projeto
 
-bash
-Copiar
-Editar
 /frontend     # Aplicação Vue 3
 /backend      # API Laravel
 /public/sounds/victory-horn.mp3  # Efeito sonoro da vitória
@@ -84,5 +81,4 @@ Feito com 💻 + ☕ + um pouquinho de sorte nas tentativas por Pedro Dias
 
 ## 🖼️ Preview
 
-![demo](https://github.com/user-attachments/assets/4742f06b-f7f8-44c0-bfd0-fecbf9cd3ca3)
-
+![Demo do Jogo](https://github.com/pedrovpdias/termo/blob/main/public/assets/demo.gif?raw=true)
