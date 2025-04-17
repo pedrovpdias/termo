@@ -1,7 +1,7 @@
 <template>
-  <main class="grid justify-center place-content-start min-h-screen p-8 z-10">
-    <form method="post" action="/guess" class="grid justify-center place-content-start gap-8 p-8 z-10">
-      <img :src="logo" alt="Termo" class="w-40 h-auto mx-auto" />
+  <main class="grid justify-center place-content-start min-h-screen p-4 md:p-8 z-10">
+    <form method="post" action="/guess" class="grid justify-center place-content-start gap-8 p-4 md:p-8 z-10">
+      <img :src="logo" alt="Termo" class="w-32 md:w-40 h-auto mx-auto" />
 
       <Row 
         ref="rowComponent"

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-5 gap-4 w-fit mx-auto z-30">
+  <div class="grid grid-cols-5 gap-2 md:gap-4 w-fit mx-auto z-30">
     <input
       v-for="n in 5"
       :key="n"
@@ -101,7 +101,7 @@
 
   // Adiciona a lógica das classes CSS
   function inputClass(index) {
-    const base = 'border-2 size-18 rounded-lg text-3xl font-bold text-center transition-all';
+    const base = 'border-2 size-14 md:size-18 rounded-lg text-xl md:text-3xl font-bold text-center transition-all';
 
     // Linha correta = tudo verde, mesmo sem feedback
     if (props.won) {

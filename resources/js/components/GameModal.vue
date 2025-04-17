@@ -3,8 +3,8 @@
     v-if="show"
     class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
   >
-    <div class="bg-black rounded-2xl text-center w-96 shadow-xl grid gap-2">
-      <h2 class="text-2xl font-bold px-4 pt-8">{{ title }}</h2>
+    <div class="bg-black rounded-2xl text-center w-72 md:w-96 shadow-xl grid gap-2">
+      <h2 class="text-lg md:text-2xl font-bold px-4 pt-8">{{ title }}</h2>
       <p class="p-4">{{ message }}</p>
 
       <div v-if="wordOfTheDay" class="text-sm text-zinc-400 py-2">
