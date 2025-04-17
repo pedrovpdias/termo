@@ -81,4 +81,4 @@ Feito com 💻 + ☕ + um pouquinho de sorte nas tentativas por Pedro Dias
 
 ## 🖼️ Preview
 
-![Demo do Jogo](https://github.com/pedrovpdias/termo/blob/main/public/assets/demo.gif?raw=true)
+![Demo](https://github.com/pedrovpdias/termo/blob/main/public/assets/demo.gif)
