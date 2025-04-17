@@ -72,7 +72,7 @@ php artisan serve
 ## 📁 Estrutura do Projeto
 
 - /frontend     # Aplicação Vue 3
-- /backend      # API Laravel
+- /backend      # API Laravel 12
 
 ---
 
