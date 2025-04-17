@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 class AppController extends Controller
 {
     public function index()
-    {        
+    {
         // Define o fuso horário
         date_default_timezone_set('America/Sao_Paulo');
         if(!session('word')) { 

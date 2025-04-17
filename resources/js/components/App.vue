@@ -136,8 +136,9 @@
                   this.correctWord = currentWord;
                   this.showModal = true;
 
-                  // Exibe animação de "confetti"
-                  this.showConfetti();
+                  let hasWon = false; // Flag para evitar animações e som de vitória duplicados
+                  // Animações e som de vitória
+                  hasWon = this.handleVictory(hasWon);
 
                   // Gera o texto de compartilhamento
                   this.resultText = this.generateShareText();
@@ -246,6 +247,20 @@
           spread: 70,
           origin: { y: 0.6 },
         });
+      },
+
+      handleVictory(hasWon) {
+        if (hasWon) return;
+        hasWon = true;
+
+        // Exibe animação de "confetti"
+        this.showConfetti();
+
+        // Gera o som de vitoria
+        const victorySound = new Audio('sounds/victory-horn.mp3');
+        victorySound.play();
+
+        return;
       },
 
       // Atualiza a contagem regressiva para o próximo jogo

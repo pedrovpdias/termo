@@ -1,66 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎮 Termo Clone – Jogo de Adivinhação de Palavras
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este é um projeto pessoal inspirado no popular jogo "Termo", desenvolvido com **Vue 3** e **Laravel**. O objetivo é adivinhar uma palavra secreta em até 6 tentativas, com dicas visuais baseadas nas letras corretas e suas posições.
 
-## About Laravel
+Criado como um exercício de aprendizado e experimentação com tecnologias modernas do ecossistema web.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Funcionalidades
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- ✅ Interface responsiva e dinâmica com Vue 3
+- 🧠 Backend em Laravel para validação de palavras
+- 🎉 Animação de vitória com confetes e efeito sonoro
+- 🎹 Teclado virtual para dispositivos touch
+- 💾 Salvamento de progresso com localStorage
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Tecnologias Utilizadas
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- [Vue 3](https://vuejs.org/) – Interface do jogo
+- [Laravel](https://laravel.com/) – Backend e API de validação de palavras
+- **MySQL** – Armazenamento das palavras e estatísticas
+- [canvas-confetti](https://www.npmjs.com/package/canvas-confetti) – Animação de vitória
+- HTML5 Audio – Efeitos sonoros
+- localStorage – Persistência no navegador
+- [Dicionário Aberto API](https://api.dicionario-aberto.net/index.html) – Consulta de palavras e definições
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 📡 API & Banco de Dados
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+O backend da aplicação, desenvolvido com Laravel, fornece uma API interna para:
 
-### Premium Partners
+- Validar palavras digitadas pelo jogador
+- Armazenar estatísticas e histórico de jogos
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Além disso, a aplicação utiliza a API pública do [Dicionário Aberto](https://api.dicionario-aberto.net/index.html) para:
 
-## Contributing
+- Confirmar a existência de palavras
+- Buscar definições e enriquecer a experiência do usuário (se aplicável)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Os dados persistentes são armazenados em um banco **MySQL**, utilizando migrations que podem ser encontradas em `backend/database/migrations`.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Instalação
 
-## Security Vulnerabilities
+```bash
+# Clone o repositório
+git clone https://github.com/pedrovpdias/termo.git
+cd termo
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Instale as dependências do frontend
+cd frontend
+npm install
+npm run dev
 
-## License
+# Em outra aba, vá para o backend
+cd ../backend
+composer install
+cp .env.example .env
+php artisan key:generate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Configure o banco de dados no .env e rode as migrations
+php artisan migrate
+
+# Inicie o servidor Laravel
+php artisan serve
+
+📁 Estrutura do Projeto
+
+bash
+Copiar
+Editar
+/frontend     # Aplicação Vue 3
+/backend      # API Laravel
+/public/sounds/victory-horn.mp3  # Efeito sonoro da vitória
+
+👨‍💻 Sobre o Projeto
+Este projeto foi desenvolvido com foco em aprendizado, explorando integrações entre frontend e backend, animações e interações com o usuário. É também uma forma divertida de aplicar boas práticas com Vue e Laravel.
+
+Feito com 💻 + ☕ + um pouquinho de sorte nas tentativas por Pedro Dias
+
+## 🖼️ Preview
+
+![Demo do Jogo](public/assets/demo.gif)
