@@ -14,7 +14,7 @@ Criado como um exercício de aprendizado e experimentação com tecnologias mode
 - 🧠 Backend em Laravel para validação de palavras
 - 🎉 Animação de vitória com confetes e efeito sonoro
 - 🎹 Teclado virtual para dispositivos touch
-- 💾 Salvamento de progresso com localStorage
+- 💾 Persistência de progresso com localStorage
 
 ---
 
@@ -26,7 +26,6 @@ Criado como um exercício de aprendizado e experimentação com tecnologias mode
 - [canvas-confetti](https://www.npmjs.com/package/canvas-confetti) – Animação de vitória
 - HTML5 Audio – Efeitos sonoros
 - localStorage – Persistência no navegador
-- [Dicionário Aberto API](https://api.dicionario-aberto.net/index.html) – Consulta de palavras e definições
 
 ---
 
@@ -35,12 +34,6 @@ Criado como um exercício de aprendizado e experimentação com tecnologias mode
 O backend da aplicação, desenvolvido com Laravel, fornece uma API interna para:
 
 - Validar palavras digitadas pelo jogador
-- Armazenar estatísticas e histórico de jogos
-
-Além disso, a aplicação utiliza a API pública do [Dicionário Aberto](https://api.dicionario-aberto.net/index.html) para:
-
-- Confirmar a existência de palavras
-- Buscar definições e enriquecer a experiência do usuário (se aplicável)
 
 Os dados persistentes são armazenados em um banco **MySQL**, utilizando migrations que podem ser encontradas em `backend/database/migrations`.
 

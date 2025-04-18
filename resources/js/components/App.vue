@@ -162,7 +162,7 @@
                 }
 
                 // Salva o estado do jogo no localStorage
-                // this.saveGameState();          //////////////////////////////////////////////// ENABLE THIS LINE TO SAVE THE GAME STATE      
+                this.saveGameState();
               })
               .catch(err => console.error(err));
             }
