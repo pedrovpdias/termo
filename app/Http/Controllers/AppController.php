@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SecretWord;
+use App\Services\Operations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -38,17 +39,15 @@ class AppController extends Controller
 
             // Verifica se a palavra secreta precisa ser atualizada
             if(!$secretWord || !$checkSecretWordDate) {
-                do {
-                    $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/random');
-                    $data = $response->json();
-                } while (strlen($data['word']) != 5);
+                // Busca uma palavra aleatória
+                $newSecretWord = $secretWord ? Operations::drawWord($secretWord['word']) : Operations::drawWord();
 
-                session(['word' => $data['word']]);
+                session(['word' => $newSecretWord]);
 
                 if(!$secretWord) {
                     $secretWord = new SecretWord;
                 }
-                $secretWord->word = $data['word'];
+                $secretWord->word = $newSecretWord;
                 $secretWord->save();
             }
             
@@ -116,17 +115,16 @@ class AppController extends Controller
     // Verifica se a palavra existe
     public function checkWord($word)
     {
-        // Busca a palavra do palpite na API
-        $response = Http::withoutVerifying()->get('https://api.dicionario-aberto.net/word/' . $word . '/1');
-        $data = $response->json();
+        // Busca a palavra do palpite na base de dados
+        $find = Operations::checkWord($word);
 
         // Verifica se a palavra existe
-        if(count($data) == 0) {
-            return response()->json(['exists' => false]);
+        if($find) {
+            return response()->json(['exists' => true]);
         }
 
         else {
-            return response()->json(['exists' => true]);
+            return response()->json(['exists' => false]);
         }
     }
 }
