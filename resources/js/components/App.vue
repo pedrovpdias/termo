@@ -253,12 +253,12 @@
         if (hasWon) return;
         hasWon = true;
 
-        // Exibe animação de "confetti"
-        this.showConfetti();
-
         // Gera o som de vitoria
         const victorySound = new Audio('sounds/victory-horn.mp3');
         victorySound.play();
+
+        // Exibe animação de "confetti"
+        this.showConfetti();
 
         return;
       },
