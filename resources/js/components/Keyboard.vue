@@ -4,7 +4,7 @@
       <button
         v-for="key in row"
         :key="key"
-        class="px-2 py-1 bg-zinc-700 text-white text-sm md:text-base rounded hover:bg-zinc-500 active:bg-zinc-800 focus:bg-zinc-500 outline-none"
+        class="px-2 py-1 bg-zinc-700 text-white text-base rounded hover:bg-zinc-500 active:bg-zinc-800 focus:bg-zinc-500 outline-none"
         @click="$emit('key', key)"
       >
         {{ key }}

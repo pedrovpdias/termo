@@ -10,11 +10,11 @@ Criado como um exercício de aprendizado e experimentação com tecnologias mode
 
 ## ✨ Funcionalidades
 
-- ✅ Interface responsiva e dinâmica com Vue 3
+- ✅ Interface responsiva e dinâmica com **Vue 3** & **TailwindCSS 4**
 - 🧠 Backend em Laravel para validação de palavras
 - 🎉 Animação de vitória com confetes e efeito sonoro
 - 🎹 Teclado virtual para dispositivos touch
-- 💾 Persistência de progresso com localStorage
+- 💾 Persistência de progresso com **localStorage**
 
 ---
 
@@ -23,15 +23,17 @@ Criado como um exercício de aprendizado e experimentação com tecnologias mode
 - [Vue 3](https://vuejs.org/) – Interface do jogo
 - [Laravel](https://laravel.com/) – Backend e API de validação de palavras
 - **MySQL** – Armazenamento das palavras e estatísticas
+- [TailwindCSS 4](https://tailwindcss.com/)
+- [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [canvas-confetti](https://www.npmjs.com/package/canvas-confetti) – Animação de vitória
-- HTML5 Audio – Efeitos sonoros
-- localStorage – Persistência no navegador
+- **HTML5 Audio** – Efeitos sonoros
+- **localStorage** – Persistência no navegador
 
 ---
 
 ## 📡 API & Banco de Dados
 
-O backend da aplicação, desenvolvido com Laravel, fornece uma API interna para:
+O backend da aplicação, desenvolvido com **Laravel**, fornece uma API interna para:
 
 - Validar palavras digitadas pelo jogador
 
