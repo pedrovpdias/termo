@@ -2,59 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SecretWord;
 use App\Services\Operations;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 
 class AppController extends Controller
 {
-    public function index()
+    public function index(Operations $appServices)
     {
-        // Define o fuso horário
         date_default_timezone_set('America/Sao_Paulo');
-        if(!session('word')) { 
-            $secretWord = SecretWord::find(1);
+        // Verifica se já há uma sessão aberta no dia atual
+        if(!session('word') || session('session_date') != date('Y-m-d')) {
+            // Sorteia uma palavra
+            $secretWord = $appServices->drawSecretWord();
             
-            // Verifica se a palavra secreta foi atualizada hoje
-            if($secretWord) {
-                if($secretWord['created_at'] != $secretWord['updated_at']) {
-                    $secretWordDate = $secretWord['updated_at'];
-                }
-                else {
-                    $secretWordDate = $secretWord['created_at'];
-                }
-
-                if(date('Y-m-d') == $secretWordDate->format('Y-m-d')) {
-                    $checkSecretWordDate = true;
-                }
-                else {
-                    $checkSecretWordDate = false;
-                }
-            }
-
-            else {
-                $checkSecretWordDate = false;
-            }
-
-            // Verifica se a palavra secreta precisa ser atualizada
-            if(!$secretWord || !$checkSecretWordDate) {
-                // Busca uma palavra aleatória
-                $newSecretWord = $secretWord ? Operations::drawWord($secretWord['word']) : Operations::drawWord();
-
-                session(['word' => $newSecretWord]);
-
-                if(!$secretWord) {
-                    $secretWord = new SecretWord;
-                }
-                $secretWord->word = $newSecretWord;
-                $secretWord->save();
-            }
-            
-            else {
-                session(['word' => $secretWord['word']]);
-            }
-        }  
+            // Salva a palavra na sessão
+            session(
+                [
+                    'word' => $secretWord,
+                    'session_date' => date('Y-m-d')
+                ]
+            );
+        }   
         
         return view('app');
     }
