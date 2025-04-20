@@ -16,12 +16,20 @@
       @focus="handleFocus(n)"
       @keypress="checkValidKey($event)"
       @keydown="handleKeydown(n, $event)"
+      :readonly="isMobile"
+      inputmode="none"
     />
   </div>
 </template>
 
 <script setup>
   import { ref, onMounted, reactive } from 'vue';
+
+  // Detecta se o dispositivo é mobile
+  const isMobile = ref(false);
+  function detectMobile() {
+    isMobile.value = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  }
 
   // Repassa o evento para <Row.vue />
   const emit = defineEmits(['ready']);
@@ -90,6 +98,9 @@
   }
 
   onMounted(() => {
+    // Detecta se o dispositivo é mobile
+    detectMobile();
+
     // Foca no primeiro <input /> quando a linha for habilitada
     if (props.attempt === props.row) {
       const firstInput = inputRefs.value[1];

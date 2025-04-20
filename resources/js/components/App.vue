@@ -1,5 +1,5 @@
 <template>
-  <main class="grid justify-center place-content-start min-h-screen p-4 md:p-8 z-10">
+  <main class="grid justify-center place-content-start h-full md:h-screen overflow-hidden py-4 md:py-8 z-10">
     <form method="post" action="/guess" class="grid justify-center place-content-start gap-8 p-4 md:p-8 z-10">
       <img :src="logo" alt="Termo" class="w-32 md:w-40 h-auto mx-auto" />
 
@@ -94,6 +94,9 @@
 
         // Monta a palavra enviada
         const currentWord = rows[this.attempt][1]+rows[this.attempt][2]+rows[this.attempt][3]+rows[this.attempt][4]+rows[this.attempt][5];
+
+        // Verifica se a palavra tem 5 letras
+        if (currentWord.length !== 5) return;
         
         // Verifica se a palavra atual existe
         axios.post(`check-word/${currentWord}`, 
