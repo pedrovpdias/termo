@@ -2,7 +2,7 @@
   <div class="grid grid-cols-5 gap-2 md:gap-4 w-fit mx-auto z-30">
     <input
       v-for="n in 5"
-      :key="n"
+      :key="attempt + '-' + n"
       :ref="el => setInputRef(n, el)"
       :name="`row_${row}_letter_${n}`"
       type="text"
@@ -68,7 +68,7 @@
   // Atualiza o [array] de letras
   function handleInput(index, event) {
     const value = event.target.value;
-    letters[index] = value;
+    letters[index] = value.toUpperCase();
 
     // Chama a função para mover o foco
     focusNext(index, event);
@@ -81,10 +81,18 @@
 
   function handleKeydown(index, event) {
     // Se pressionar Backspace num input vazio, volta pro anterior
-    if (event.key === 'Backspace' && letters[index] === '' && index > 1) {
-      const prevInput = inputRefs.value[index - 1];
-      if (prevInput && typeof prevInput.focus === 'function') {
-        prevInput.focus();
+    if (event.key === 'Backspace') {
+      if (letters[index] !== '') {
+        letters[index] = '';
+        event.preventDefault();
+        return;
+      }
+
+      if (index > 1) {
+        const prevInput = inputRefs.value[index - 1];
+        if (prevInput && typeof prevInput.focus === 'function') {
+          prevInput.focus();
+        }
       }
     }
   }

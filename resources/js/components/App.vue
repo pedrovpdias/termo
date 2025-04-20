@@ -74,7 +74,7 @@
         }
       },
 
-      submitForm() {
+      async submitForm() {
         // Pegar os inputs
         const form = document.querySelector('form');
         const inputs = form.querySelectorAll('input');
@@ -96,10 +96,10 @@
         const currentWord = rows[this.attempt][1]+rows[this.attempt][2]+rows[this.attempt][3]+rows[this.attempt][4]+rows[this.attempt][5];
 
         // Verifica se a palavra tem 5 letras
-        if (currentWord.length !== 5) return;
+        if (currentWord.length !== 5) return this.focusFirstInput();
         
         // Verifica se a palavra atual existe
-        axios.post(`check-word/${currentWord}`, 
+        await axios.post(`check-word/${currentWord}`, 
         {},
         {
           headers: {
@@ -160,8 +160,11 @@
                 }
 
                 // Se não perdeu ou ainda não ganhou, passa para a próxima tentativa
-                if(!win && this.attempt !== 6) {
-                  this.guess();
+                if (!win && this.attempt !== 6) {
+                  // Aguarda DOM aplicar mudanças antes de mudar de linha
+                  nextTick(() => {
+                    this.guess();
+                  });
                 }
 
                 // Salva o estado do jogo no localStorage

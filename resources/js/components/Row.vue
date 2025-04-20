@@ -35,7 +35,7 @@
     emit('ready'); // repassa o evento para App.vue
   }
 
-  // Expoe para o componente pai (<App.vue />)
+  // Permite que o componente pai (<App.vue />) acesse os refs das linhas para scroll, animação, etc.
   defineExpose({
     rowRefs
   });
