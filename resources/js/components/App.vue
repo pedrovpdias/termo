@@ -1,7 +1,9 @@
 <template>
   <main class="grid justify-center place-content-start h-full md:h-screen overflow-hidden py-4 md:py-8 z-10">
-    <section id="game" class="grid justify-center place-content-start gap-8 p-4 md:p-8 z-10">
+    <section id="game" class="grid justify-center place-content-start gap-8 p-4 md:p-8 z-10 relative">
       <img :src="logo" alt="Termo" class="w-32 md:w-40 h-auto mx-auto" />
+
+      <ErrorMessage :show="showError" />
 
       <Row 
         ref="rowComponent"
@@ -32,6 +34,7 @@
   import Row from './Row.vue';
   import Keyboard from './Keyboard.vue';
   import GameModal from './GameModal.vue';
+  import ErrorMessage from './ErrorMessage.vue';
   
   import logo from '../../images/logo.png';
   import confetti from 'canvas-confetti';
@@ -43,7 +46,7 @@
 
   export default {
     name: 'App',
-    components: { Row, Keyboard, GameModal },
+    components: { Row, Keyboard, GameModal, ErrorMessage },
     data() {
       return {
         logo,
@@ -58,6 +61,7 @@
         correctWord: '', // Palavra correta    
         nextGameCountdown: '', // Contagem regressiva para o próximo jogo
         resultText: '', // Mensagem de resultado do jogo para compartilhar
+        showError: false, // Exibe o erro
       };
     },
     methods: {
@@ -204,6 +208,13 @@
         }
       },
       handleInvalidWord() {
+        //
+        this.showError = true;
+
+        setTimeout(() => {
+          this.showError = false;
+        }, 2500);
+
         // Ativa a animação "shake"
         this.shakeRow = this.attempt;
 

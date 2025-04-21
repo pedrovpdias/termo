@@ -6,6 +6,7 @@ import Row from './components/Row.vue';
 import Letter from './components/Letter.vue';
 import Keyboard from './components/Keyboard.vue';
 import GameModal from './components/GameModal.vue';
+import ErrorMessage from './components/ErrorMessage.vue';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -16,4 +17,5 @@ app.component('row', Row);
 app.component('letter', Letter);
 app.component('keyboard', Keyboard);
 app.component('game-modal', GameModal);
+app.component('error-message', ErrorMessage);
 app.mount('#app'); // Monte a aplicação no elemento com id "app"
