@@ -1,6 +1,6 @@
 <template>
   <main class="grid justify-center place-content-start h-full md:h-screen overflow-hidden py-4 md:py-8 z-10">
-    <form method="post" action="/guess" class="grid justify-center place-content-start gap-8 p-4 md:p-8 z-10">
+    <section id="game" class="grid justify-center place-content-start gap-8 p-4 md:p-8 z-10">
       <img :src="logo" alt="Termo" class="w-32 md:w-40 h-auto mx-auto" />
 
       <Row 
@@ -11,7 +11,7 @@
         :shakeRow="shakeRow"
         @ready="onRowReady"
       />
-    </form>
+    </section>
 
     <Keyboard @key="handleVirtualKey" />
 
@@ -76,8 +76,8 @@
 
       async submitForm() {
         // Pegar os inputs
-        const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input');
+        const game = document.getElementById('game');
+        const inputs = game.querySelectorAll('input');
         const rows = {};
 
         // Agrupar <inputs /> por linha
@@ -99,86 +99,64 @@
         if (currentWord.length !== 5) return this.focusFirstInput();
         
         // Verifica se a palavra atual existe
-        await axios.post(`check-word/${currentWord}`, 
-        {},
-        {
-          headers: {
-            'X-CSRF-TOKEN': csrfToken,
+        try {
+          const checkResponse = await axios.post(`check-word/${currentWord}`, {}, {
+            headers: {
+              'X-CSRF-TOKEN': csrfToken,
+            }
+          });
+
+          const exists = checkResponse.data.exists;
+
+          if (exists) {
+            const guessResponse = await axios.post('/guess', {
+              guess
+            }, {
+              headers: {
+                'X-CSRF-TOKEN': csrfToken,
+              }
+            });
+
+            this.feedbacks[this.attempt] = guessResponse.data.feedback;
+
+            let win = true;
+            for (let i = 1; i <= 5; i++) {
+              if (this.feedbacks[this.attempt][i] !== 'correct') {
+                win = false;
+              }
+            }
+
+            if (win) {
+              this.wonAtRow = this.attempt;
+              this.modalTitle = 'Vitória!';
+              this.modalMessage = 'Parabéns, você acertou a palavra do dia!';
+              this.correctWord = currentWord;
+              this.showModal = true;
+
+              let hasWon = false;
+              hasWon = this.handleVictory(hasWon);
+              this.resultText = this.generateShareText();
+            } else if (this.attempt === 6) {
+              this.modalTitle = 'Fim de jogo!';
+              this.modalMessage = 'Você usou todas as tentativas.';
+              this.correctWord = guessResponse.data.correctWord;
+              this.showModal = true;
+              this.resultText = this.generateShareText();
+            }
+
+            if (!win && this.attempt !== 6) {
+              await nextTick() // espera DOM atualizar
+              .then(() => this.guess());
+            }
+
+            this.saveGameState();
+          } else {
+            this.handleInvalidWord();
           }
-        })
-          .then(response => response.data)
-          .then(data => data.exists)
-          .then(exists => {
-            if(exists){
-              // Enviar a tentativa
-              axios.post('/guess', {
-                guess
-              }, {
-                headers: {
-                  'X-CSRF-TOKEN': csrfToken,
-                }
-              })
-              .then(response => {
-                this.feedbacks[this.attempt] = response.data.feedback;
-                
-                let win = true;
 
-                for (let i = 1; i <= 5; i++) {
-                  if (this.feedbacks[this.attempt][i] !== 'correct') {
-                    win = false;
-                  }
-                }
-
-                // Verifica se ganhou
-                if (win) {
-                  this.wonAtRow = this.attempt;
-
-                  // Exibe e configura o modal em caso de vitória
-                  this.modalTitle = 'Vitória!';
-                  this.modalMessage = 'Parabéns, você acertou a palavra do dia!';
-                  this.correctWord = currentWord;
-                  this.showModal = true;
-
-                  let hasWon = false; // Flag para evitar animações e som de vitória duplicados
-                  // Animações e som de vitória
-                  hasWon = this.handleVictory(hasWon);
-
-                  // Gera o texto de compartilhamento
-                  this.resultText = this.generateShareText();
-                }
-
-                // Verifica se perdeu
-                if (!win && this.attempt === 6) {
-                  // Exibe e configura o modal em caso de derrota
-                  this.modalTitle = 'Fim de jogo!';
-                  this.modalMessage = 'Você usou todas as tentativas.';
-                  this.correctWord = response.data.correctWord; // talvez você precise recuperar isso do backend
-                  this.showModal = true;
-
-                  // Gera o texto de compartilhamento
-                  this.resultText = this.generateShareText();
-                }
-
-                // Se não perdeu ou ainda não ganhou, passa para a próxima tentativa
-                if (!win && this.attempt !== 6) {
-                  // Aguarda DOM aplicar mudanças antes de mudar de linha
-                  nextTick(() => {
-                    this.guess();
-                  });
-                }
-
-                // Salva o estado do jogo no localStorage
-                this.saveGameState();
-              })
-              .catch(err => console.error(err));
-            }
-
-            else {
-              this.handleInvalidWord();
-              
-            }
-          })
-          .catch(err => console.error(err));
+        } catch (err) {
+          console.error(err);
+        }
         
       },
 
@@ -307,8 +285,8 @@
       // Salva o estado do jogo no localStorage
       saveGameState() {
         // Pegar o conteúdo das letras digitadas
-        const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input');
+        const game = document.getElementById('game');
+        const inputs = game.querySelectorAll('input');
         const letters = {};
 
         inputs.forEach(input => {
